@@ -7,9 +7,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.felix.imgurexplorer.R;
 import com.felix.imgurexplorer.model.Photo;
-import com.squareup.picasso.Picasso;
 
 import static com.felix.imgurexplorer.ui.MainActivity.MOVIE;
 
@@ -30,8 +30,14 @@ public class PhotoDetailActivity extends AppCompatActivity {
         Photo photo = intent.getParcelableExtra(MOVIE);
         mIvPhotoDetail = findViewById(R.id.image_view_photo_detail);
         mTvPhotoDetail = findViewById(R.id.text_view_photo_detail);
+
         String imageUrl = "https://i.imgur.com/" + photo.getId() + ".jpg";
-        Picasso.get().load(imageUrl).fit().centerInside().into(mIvPhotoDetail);
+        Glide.with(this)
+                .load(imageUrl)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(mIvPhotoDetail);
+
         this.setTitle("");
         mTvPhotoDetail.setText(photo.getTitle());
     }

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.OnIt
     private PhotoAdapter mPhotoAdapter;
     private ArrayList<Photo> mPhotoList;
     private RequestQueue mRequestQueue;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +44,16 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.OnIt
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mSearchView = findViewById(R.id.search_view);
 
         mPhotoList = new ArrayList<>();
         mRequestQueue = Volley.newRequestQueue(this);
-        parseJSON(1, "cats");
+        initSearchView();
     }
 
     public void parseJSON(int pageNumber, String queryString) {
+        mPhotoList.clear();
         String url = "https://api.imgur.com/3/gallery/search/time/" + pageNumber + "?q=" + queryString;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -99,6 +102,21 @@ public class MainActivity extends AppCompatActivity implements PhotoAdapter.OnIt
         };
 
         mRequestQueue.add(request);
+    }
+
+    private void initSearchView() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                parseJSON(1, s);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
     }
 
     @Override

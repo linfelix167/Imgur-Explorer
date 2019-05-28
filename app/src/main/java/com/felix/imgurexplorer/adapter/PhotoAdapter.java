@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.felix.imgurexplorer.R;
 import com.felix.imgurexplorer.model.Photo;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -46,9 +46,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         Photo photo = mPhotoList.get(i);
         String title = photo.getTitle();
         String id = photo.getId();
-        String imageUrl = "https://i.imgur.com/" + id + ".jpg";
         photoViewHolder.mTextViewTitle.setText(title);
-        Picasso.get().load(imageUrl).fit().centerInside().into(photoViewHolder.mImageView);
+        String imageUrl = "https://i.imgur.com/" + id + ".jpg";
+        Glide.with(photoViewHolder.itemView)
+                .load(imageUrl)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(photoViewHolder.mImageView);
     }
 
     @Override
