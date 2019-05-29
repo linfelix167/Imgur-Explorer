@@ -1,7 +1,6 @@
 package com.felix.imgurexplorer.ui;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements PhotoAdapter.OnItemClickListener {
+public class MainActivity extends BaseActivity implements PhotoAdapter.OnItemClickListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String MOVIE = "MOVIE";

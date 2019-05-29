@@ -2,7 +2,6 @@ package com.felix.imgurexplorer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,7 +12,7 @@ import com.felix.imgurexplorer.model.Photo;
 
 import static com.felix.imgurexplorer.ui.MainActivity.MOVIE;
 
-public class PhotoDetailActivity extends AppCompatActivity {
+public class PhotoDetailActivity extends BaseActivity {
 
     private ImageView mIvPhotoDetail;
     private TextView mTvPhotoDetail;
