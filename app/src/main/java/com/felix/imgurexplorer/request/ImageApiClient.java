@@ -24,6 +24,7 @@ public class ImageApiClient {
     private static ImageApiClient instance;
     private MutableLiveData<List<Image>> mPhotos;
     private RetrievePhotosRunnable mRetrievePhotosRunnable;
+    private MutableLiveData<Image> mImage;
 
     public static ImageApiClient getInstance() {
         if (instance == null) {

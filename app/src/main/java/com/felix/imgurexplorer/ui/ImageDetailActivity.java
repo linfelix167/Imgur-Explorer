@@ -2,6 +2,8 @@ package com.felix.imgurexplorer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,12 +12,13 @@ import com.bumptech.glide.Glide;
 import com.felix.imgurexplorer.R;
 import com.felix.imgurexplorer.model.Image;
 
-import static com.felix.imgurexplorer.ui.MainActivity.MOVIE;
+import static com.felix.imgurexplorer.ui.MainActivity.IMAGE_EXTRA;
 
 public class ImageDetailActivity extends BaseActivity {
 
-    private ImageView mIvPhotoDetail;
+    private AppCompatImageView mIvPhotoDetail;
     private TextView mTvPhotoDetail;
+    private CoordinatorLayout mParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,21 +27,23 @@ public class ImageDetailActivity extends BaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.setTitle("");
 
-        Intent intent = getIntent();
-        Image image = intent.getParcelableExtra(MOVIE);
+        mParent = findViewById(R.id.parent);
         mIvPhotoDetail = findViewById(R.id.image_view_photo_detail);
         mTvPhotoDetail = findViewById(R.id.text_view_photo_detail);
 
-        String imageUrl = "https://i.imgur.com/" + image.getId() + ".jpg";
-        Glide.with(this)
-                .load(imageUrl)
-                .centerCrop()
-                .placeholder(R.drawable.ic_launcher_background)
-                .into(mIvPhotoDetail);
+        getIncomingIntent();
+    }
 
-        this.setTitle("");
-        mTvPhotoDetail.setText(image.getTitle());
+    private void getIncomingIntent() {
+        if (getIntent().hasExtra(IMAGE_EXTRA)) {
+            Image image = getIntent().getParcelableExtra(IMAGE_EXTRA);
+
+            mTvPhotoDetail.setText(image.getTitle());
+
+
+        }
     }
 
     @Override

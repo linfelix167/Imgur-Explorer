@@ -1,5 +1,6 @@
 package com.felix.imgurexplorer.request;
 
+import com.felix.imgurexplorer.request.response.ImageResponse;
 import com.felix.imgurexplorer.request.response.ImageSearchResponse;
 
 import retrofit2.Call;
@@ -15,5 +16,11 @@ public interface ImageApi {
     Call<ImageSearchResponse> searchPhoto(
             @Path("page") int page,
             @Query("q") String query
+    );
+
+    @Headers("Authorization: Client-ID 126701cd8332f32")
+    @GET("/{id}")
+    Call<ImageResponse> getImage(
+            @Path("id") int id
     );
 }

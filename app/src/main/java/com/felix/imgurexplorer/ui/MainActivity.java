@@ -2,6 +2,7 @@ package com.felix.imgurexplorer.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +20,7 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements ImageAdapter.OnItemClickListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-    public static final String MOVIE = "MOVIE";
+    public static final String IMAGE_EXTRA = "IMAGE_EXTRA";
 
     private ImageListViewModel mImageListViewModel;
     private RecyclerView mRecyclerView;
@@ -88,9 +89,8 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
 
     @Override
     public void onItemClick(int position) {
-//        Intent intent = new Intent(this, ImageDetailActivity.class);
-//        Image clickedImage = mImageList.get(position);
-//        intent.putExtra(MOVIE, clickedImage);
-//        startActivity(intent);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(IMAGE_EXTRA, mImageAdapter.getSelectedImage(position));
+        startActivity(intent);
     }
 }

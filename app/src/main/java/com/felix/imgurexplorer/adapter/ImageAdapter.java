@@ -130,4 +130,13 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mImageList = images;
         notifyDataSetChanged();
     }
+
+    public Image getSelectedImage(int position) {
+        if (mImageList != null) {
+            if (mImageList.size() > 0) {
+                return mImageList.get(position);
+            }
+        }
+        return null;
+    }
 }

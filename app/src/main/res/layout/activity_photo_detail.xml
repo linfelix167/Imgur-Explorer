@@ -2,9 +2,11 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:visibility="gone"
     tools:context=".ui.ImageDetailActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -23,14 +25,14 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/image_view_photo_detail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-                android:scaleType="centerCrop"
+                android:contentDescription="@string/photo_detail_image"
                 android:minHeight="100dp"
-                android:contentDescription="@string/photo_detail_image"/>
+                android:scaleType="centerCrop"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
