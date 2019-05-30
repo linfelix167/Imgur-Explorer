@@ -2,34 +2,19 @@ package com.felix.imgurexplorer.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.felix.imgurexplorer.R;
 import com.felix.imgurexplorer.adapter.ImageAdapter;
 import com.felix.imgurexplorer.model.Image;
 import com.felix.imgurexplorer.viewmodel.ImageListViewModel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends BaseActivity implements ImageAdapter.OnItemClickListener {
 
@@ -38,8 +23,8 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
 
     private ImageListViewModel mImageListViewModel;
     private RecyclerView mRecyclerView;
-    private ImageAdapter mImageAdapter;
     private SearchView mSearchView;
+    private ImageAdapter mImageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +38,7 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
 
         initRecyclerView();
         subscribeObservers();
-        testRetrofitRequest();
+        initSearchView();
     }
 
     private void subscribeObservers() {
@@ -61,9 +46,9 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
             @Override
             public void onChanged(@Nullable List<Image> images) {
                 if (images != null) {
-
+                    mImageListViewModel.setIsPerformingQuery(false);
+                    mImageAdapter.setImages(images);
                 }
-                mImageAdapter.setImages(images);
             }
         });
     }
@@ -72,17 +57,25 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
         mImageAdapter = new ImageAdapter(this);
         mRecyclerView.setAdapter(mImageAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
 
-    private void testRetrofitRequest() {
-        mImageListViewModel.searchImagesApi(1, "cats");
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (!mRecyclerView.canScrollVertically(1)) {
+                    // search the next page
+                    mImageListViewModel.searchNextPage();
+                }
+            }
+        });
     }
 
     private void initSearchView() {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-
+            public boolean onQueryTextSubmit(String query) {
+                mImageAdapter.displayLoading();
+                mImageListViewModel.searchImagesApi(0, query);
+                mSearchView.clearFocus();
                 return false;
             }
 

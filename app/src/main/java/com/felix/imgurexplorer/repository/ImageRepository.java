@@ -11,6 +11,8 @@ public class ImageRepository {
 
     private static ImageRepository instance;
     private ImageApiClient mImageApiClient;
+    private String mQuery;
+    private int mPageNumber;
 
     public static ImageRepository getInstance() {
         if (instance == null) {
@@ -31,6 +33,16 @@ public class ImageRepository {
         if (pageNumber == 0) {
             pageNumber = 1;
         }
+        mQuery = query;
+        mPageNumber = pageNumber;
         mImageApiClient.searchPhotoApi(pageNumber, query);
+    }
+
+    public void searchNextPage() {
+        searchImagesApi(mPageNumber + 1, mQuery);
+    }
+
+    public void cancelRequest() {
+        mImageApiClient.cancelRequest();
     }
 }

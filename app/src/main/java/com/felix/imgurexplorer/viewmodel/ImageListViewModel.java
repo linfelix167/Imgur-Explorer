@@ -11,9 +11,11 @@ import java.util.List;
 public class ImageListViewModel extends ViewModel {
 
     private ImageRepository mImageRepository;
+    private boolean mIsPerformingQuery;
 
     public ImageListViewModel() {
         mImageRepository = ImageRepository.getInstance();
+        mIsPerformingQuery = false;
     }
 
     public LiveData<List<Image>> getImages() {
@@ -21,6 +23,21 @@ public class ImageListViewModel extends ViewModel {
     }
 
     public void searchImagesApi(int pageNumber, String query) {
+        mIsPerformingQuery = true;
         mImageRepository.searchImagesApi(pageNumber, query);
+    }
+
+    public boolean isIsPerformingQuery() {
+        return mIsPerformingQuery;
+    }
+
+    public void setIsPerformingQuery(boolean mIsPerformingQuery) {
+        this.mIsPerformingQuery = mIsPerformingQuery;
+    }
+
+    public void searchNextPage() {
+        if (!isIsPerformingQuery()) {
+            mImageRepository.searchNextPage();
+        }
     }
 }

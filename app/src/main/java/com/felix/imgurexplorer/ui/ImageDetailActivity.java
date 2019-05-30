@@ -40,4 +40,9 @@ public class ImageDetailActivity extends BaseActivity {
         this.setTitle("");
         mTvPhotoDetail.setText(image.getTitle());
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

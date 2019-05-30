@@ -17,6 +17,8 @@ public class Image implements Parcelable {
         this.cover = cover;
     }
 
+    public Image() {}
+
     protected Image(Parcel in) {
         title = in.readString();
         id = in.readString();

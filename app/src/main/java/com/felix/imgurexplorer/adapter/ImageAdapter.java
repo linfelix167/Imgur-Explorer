@@ -1,6 +1,5 @@
 package com.felix.imgurexplorer.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,10 @@ import com.felix.imgurexplorer.util.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int IMAGE_TYPE = 1;
+    private static final int LOADING_TYPE = 2;
 
     private List<Image> mImageList;
     private OnItemClickListener mListener;
@@ -34,35 +36,88 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @NonNull
     @Override
-    public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
-        return new ImageViewHolder(view, mListener);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = null;
+
+        switch (i) {
+            case IMAGE_TYPE: {
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
+                return new ImageViewHolder(view, mListener);
+            }
+            case LOADING_TYPE: {
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_loading_list_item, viewGroup, false);
+                return new LoadingViewHolder(view);
+            }
+            default: {
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
+                return new ImageViewHolder(view, mListener);
+            }
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ImageViewHolder imageViewHolder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
 
+        int itemViewType = getItemViewType(i);
         Image image = mImageList.get(i);
 
-        imageViewHolder.mTextViewTitle.setText(image.getTitle());
+        if (itemViewType == IMAGE_TYPE) {
 
-        if (image.isIs_album()) {
-            image.setId(image.getCover());
-        } else {
-            image.setId(image.getId());
+            if (image.isIs_album()) {
+                image.setId(image.getCover());
+            } else {
+                image.setId(image.getId());
+            }
+
+            String imageUrl = Constants.BASE_IMAGE_URL + image.getId() + ".jpg";
+
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_background);
+
+            Glide.with(((ImageViewHolder) viewHolder).mImageView)
+                    .setDefaultRequestOptions(options)
+                    .load(imageUrl)
+                    .into(((ImageViewHolder) viewHolder).mImageView);
+
+            ((ImageViewHolder) viewHolder).mTextViewTitle.setText(image.getTitle());
         }
+    }
 
-        String imageUrl = Constants.BASE_IMAGE_URL + image.getId() + ".jpg";
+    @Override
+    public int getItemViewType(int position) {
+        if (mImageList.get(position).getTitle().equals("LOADING...")) {
+            return LOADING_TYPE;
+        } else if (position == mImageList.size()
+                && position != 0
+                && !mImageList.get(position).getTitle().equals("EXHAUSTED...")) {
+            return LOADING_TYPE;
+        } else {
+            return IMAGE_TYPE;
+        }
+    }
 
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background);
+    public void displayLoading() {
+        if (!isLoading()) {
+            Image image = new Image();
+            image.setTitle("LOADING...");
+            List<Image> loadingList = new ArrayList<>();
+            loadingList.add(image);
+            mImageList = loadingList;
+            notifyDataSetChanged();
+        }
+    }
 
-        Glide.with(imageViewHolder.itemView)
-                .setDefaultRequestOptions(options)
-                .load(imageUrl)
-                .into(imageViewHolder.mImageView);
+    private boolean isLoading() {
+        if (mImageList != null) {
+            if (mImageList.size() > 0) {
+                if (mImageList.get(mImageList.size() - 1).getTitle().equals("LOADING")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -74,26 +129,5 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void setImages(List<Image> images) {
         mImageList = images;
         notifyDataSetChanged();
-    }
-
-    public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        AppCompatImageView mImageView;
-        TextView mTextViewTitle;
-        OnItemClickListener mOnItemClickListener;
-
-        public ImageViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
-            super(itemView);
-            mImageView = itemView.findViewById(R.id.image_view);
-            mTextViewTitle = itemView.findViewById(R.id.text_view_title);
-            this.mOnItemClickListener = onItemClickListener;
-
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            mOnItemClickListener.onItemClick(getAdapterPosition());
-        }
     }
 }

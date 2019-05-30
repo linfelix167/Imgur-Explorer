@@ -56,6 +56,12 @@ public class ImageApiClient {
         }, Constants.NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
     }
 
+    public void cancelRequest() {
+        if (mRetrievePhotosRunnable != null) {
+            mRetrievePhotosRunnable.cancelRequest();
+        }
+    }
+
     private class RetrievePhotosRunnable implements Runnable {
 
         private int pageNumber;
