@@ -14,9 +14,9 @@ public class ServiceGenerator {
 
     private static Retrofit retrofit = retrofitBuilder.build();
 
-    private static PhotoApi photoApi = retrofit.create(PhotoApi.class);
+    private static ImageApi imageApi = retrofit.create(ImageApi.class);
 
-    public static PhotoApi getPhotoApi() {
-        return photoApi;
+    public static ImageApi getImageApi() {
+        return imageApi;
     }
 }

@@ -1,7 +1,10 @@
 package com.felix.imgurexplorer.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -15,8 +18,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.felix.imgurexplorer.R;
-import com.felix.imgurexplorer.adapter.PhotoAdapter;
-import com.felix.imgurexplorer.model.Photo;
+import com.felix.imgurexplorer.adapter.ImageAdapter;
+import com.felix.imgurexplorer.model.Image;
+import com.felix.imgurexplorer.viewmodel.ImageListViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,17 +28,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity implements PhotoAdapter.OnItemClickListener {
+public class MainActivity extends BaseActivity implements ImageAdapter.OnItemClickListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String MOVIE = "MOVIE";
 
+    private ImageListViewModel mImageListViewModel;
     private RecyclerView mRecyclerView;
-    private PhotoAdapter mPhotoAdapter;
-    private ArrayList<Photo> mPhotoList;
-    private RequestQueue mRequestQueue;
+    private ImageAdapter mImageAdapter;
     private SearchView mSearchView;
 
     @Override
@@ -42,72 +46,43 @@ public class MainActivity extends BaseActivity implements PhotoAdapter.OnItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mImageListViewModel = ViewModelProviders.of(this).get(ImageListViewModel.class);
+
         mRecyclerView = findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mSearchView = findViewById(R.id.search_view);
 
-        mPhotoList = new ArrayList<>();
-        mRequestQueue = Volley.newRequestQueue(this);
-        initSearchView();
+        initRecyclerView();
+        subscribeObservers();
+        testRetrofitRequest();
     }
 
-    public void parseJSON(int pageNumber, String queryString) {
-        mPhotoList.clear();
-        String url = "https://api.imgur.com/3/gallery/search/time/" + pageNumber + "?q=" + queryString;
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("data");
-                            Log.d(TAG, "onResponse: " + jsonArray.toString());
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject data = jsonArray.getJSONObject(i);
-                                String title = data.getString("title");
-                                String id;
-                                if (data.getBoolean("is_album")) {
-                                    id = data.getString("cover");
-                                } else {
-                                    id = data.getString("id");
-                                }
-
-                                mPhotoList.add(new Photo(title, id));
-                            }
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mPhotoAdapter = new PhotoAdapter(MainActivity.this, mPhotoList);
-                                    mRecyclerView.setAdapter(mPhotoAdapter);
-                                }
-                            });
-                            mPhotoAdapter.setOnItemClickListener(MainActivity.this);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+    private void subscribeObservers() {
+        mImageListViewModel.getImages().observe(this, new Observer<List<Image>>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap headers = new HashMap();
-                headers.put("Authorization", "Client-ID 126701cd8332f32");
-                return headers;
-            }
-        };
+            public void onChanged(@Nullable List<Image> images) {
+                if (images != null) {
 
-        mRequestQueue.add(request);
+                }
+                mImageAdapter.setImages(images);
+            }
+        });
+    }
+
+    private void initRecyclerView() {
+        mImageAdapter = new ImageAdapter(this);
+        mRecyclerView.setAdapter(mImageAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void testRetrofitRequest() {
+        mImageListViewModel.searchImagesApi(1, "cats");
     }
 
     private void initSearchView() {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                parseJSON(1, s);
+
                 return false;
             }
 
@@ -120,9 +95,9 @@ public class MainActivity extends BaseActivity implements PhotoAdapter.OnItemCli
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(this, PhotoDetailActivity.class);
-        Photo clickedPhoto = mPhotoList.get(position);
-        intent.putExtra(MOVIE, clickedPhoto);
-        startActivity(intent);
+//        Intent intent = new Intent(this, ImageDetailActivity.class);
+//        Image clickedImage = mImageList.get(position);
+//        intent.putExtra(MOVIE, clickedImage);
+//        startActivity(intent);
     }
 }

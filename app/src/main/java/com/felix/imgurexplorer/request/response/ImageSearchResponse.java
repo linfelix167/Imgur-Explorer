@@ -1,25 +1,25 @@
 package com.felix.imgurexplorer.request.response;
 
-import com.felix.imgurexplorer.model.Photo;
+import com.felix.imgurexplorer.model.Image;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class PhotoSearchResponse {
+public class ImageSearchResponse {
 
     @SerializedName("data")
     @Expose()
-    private List<Photo> photos;
+    private List<Image> images;
 
-    public List<Photo> getPhotos() {
-        return photos;
+    public List<Image> getImages() {
+        return images;
     }
 
     @Override
     public String toString() {
-        return "PhotoSearchResponse{" +
-                "photos=" + photos +
+        return "ImageSearchResponse{" +
+                "images=" + images +
                 '}';
     }
 }

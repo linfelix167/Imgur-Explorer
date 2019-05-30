@@ -1,4 +1,4 @@
-package com.felix.imgurexplorer;
+package com.felix.imgurexplorer.util;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

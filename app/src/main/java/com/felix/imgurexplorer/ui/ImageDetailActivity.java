@@ -8,11 +8,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.felix.imgurexplorer.R;
-import com.felix.imgurexplorer.model.Photo;
+import com.felix.imgurexplorer.model.Image;
 
 import static com.felix.imgurexplorer.ui.MainActivity.MOVIE;
 
-public class PhotoDetailActivity extends BaseActivity {
+public class ImageDetailActivity extends BaseActivity {
 
     private ImageView mIvPhotoDetail;
     private TextView mTvPhotoDetail;
@@ -26,11 +26,11 @@ public class PhotoDetailActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        Photo photo = intent.getParcelableExtra(MOVIE);
+        Image image = intent.getParcelableExtra(MOVIE);
         mIvPhotoDetail = findViewById(R.id.image_view_photo_detail);
         mTvPhotoDetail = findViewById(R.id.text_view_photo_detail);
 
-        String imageUrl = "https://i.imgur.com/" + photo.getId() + ".jpg";
+        String imageUrl = "https://i.imgur.com/" + image.getId() + ".jpg";
         Glide.with(this)
                 .load(imageUrl)
                 .centerCrop()
@@ -38,6 +38,6 @@ public class PhotoDetailActivity extends BaseActivity {
                 .into(mIvPhotoDetail);
 
         this.setTitle("");
-        mTvPhotoDetail.setText(photo.getTitle());
+        mTvPhotoDetail.setText(image.getTitle());
     }
 }

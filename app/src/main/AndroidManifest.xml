@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.PhotoDetailActivity"
+            android:name=".ui.ImageDetailActivity"
             android:label="@string/title_activity_photo_detail"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
