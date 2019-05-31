@@ -11,7 +11,7 @@ Project Design
 
 Design Diagram
 ---------
-![Fiagram](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
+![Diagram](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
 
 Why Architecture Components
 ---------
@@ -21,6 +21,12 @@ Why Architecture Components
 * No more manual lifecycle handling
 * Data is always up to date
 * Proper configuration changes
+
+Screenshots
+---------
+![Screenshot1](https://imgur.com/boCs1AX)
+![Screenshot2](https://imgur.com/hwzWksu)
+![Screenshot3](https://imgur.com/kWYOYnh)
 
 Libraries
 ---------

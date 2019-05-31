@@ -50,7 +50,7 @@ public class ImageRepository {
 
     public void doneQuery(List<Image> images) {
         if (images != null) {
-            if (images.size() % 30 != 0) {
+            if (images.size() < 30) {
                 mIsQueryExhausted.setValue(true);
             }
         } else {
