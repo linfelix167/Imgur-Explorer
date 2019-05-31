@@ -24,9 +24,9 @@ Why Architecture Components
 
 Screenshots
 ---------
-![Imgur](https://i.imgur.com/boCs1AX.png =250x)
-![Imgur](https://i.imgur.com/hwzWksu.png =250x)
-![Imgur](https://i.imgur.com/kWYOYnh.png =250x)
+![Imgur](https://i.imgur.com/boCs1AX.png width="48")
+![Imgur](https://i.imgur.com/hwzWksu.png width="48")
+![Imgur](https://i.imgur.com/kWYOYnh.png width="48")
 
 Libraries
 ---------
