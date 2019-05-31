@@ -94,7 +94,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return LOADING_TYPE;
         } else if (mImageList.get(position).getTitle().equals("EXHAUSTED...")) {
             return EXHAUSTED_TYPE;
-        } else if (position == mImageList.size()
+        } else if (position == mImageList.size() - 1
                 && position != 0
                 && !mImageList.get(position).getTitle().equals("EXHAUSTED...")) {
             return LOADING_TYPE;
