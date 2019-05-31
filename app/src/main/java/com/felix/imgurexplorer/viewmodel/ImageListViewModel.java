@@ -36,8 +36,12 @@ public class ImageListViewModel extends ViewModel {
     }
 
     public void searchNextPage() {
-        if (!isIsPerformingQuery()) {
+        if (!isIsPerformingQuery() && !isQueryExhausted().getValue()) {
             mImageRepository.searchNextPage();
         }
+    }
+
+    public LiveData<Boolean> isQueryExhausted() {
+        return mImageRepository.isQueryExhausted();
     }
 }

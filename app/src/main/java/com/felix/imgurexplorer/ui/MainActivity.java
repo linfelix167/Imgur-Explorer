@@ -19,7 +19,6 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements ImageAdapter.OnItemClickListener {
 
-    public static final String TAG = MainActivity.class.getSimpleName();
     public static final String IMAGE_EXTRA = "IMAGE_EXTRA";
 
     private ImageListViewModel mImageListViewModel;
@@ -49,6 +48,15 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
                 if (images != null) {
                     mImageListViewModel.setIsPerformingQuery(false);
                     mImageAdapter.setImages(images);
+                }
+            }
+        });
+
+        mImageListViewModel.isQueryExhausted().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean) {
+                    mImageAdapter.setQueryExhausted();
                 }
             }
         });
@@ -89,7 +97,7 @@ public class MainActivity extends BaseActivity implements ImageAdapter.OnItemCli
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, ImageDetailActivity.class);
         intent.putExtra(IMAGE_EXTRA, mImageAdapter.getSelectedImage(position));
         startActivity(intent);
     }

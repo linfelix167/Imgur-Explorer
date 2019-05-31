@@ -1,12 +1,10 @@
 package com.felix.imgurexplorer.adapter;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -21,6 +19,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private static final int IMAGE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
+    private static final int EXHAUSTED_TYPE = 3;
 
     private List<Image> mImageList;
     private OnItemClickListener mListener;
@@ -41,15 +40,19 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         switch (i) {
             case IMAGE_TYPE: {
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_list_item, viewGroup, false);
                 return new ImageViewHolder(view, mListener);
             }
             case LOADING_TYPE: {
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_loading_list_item, viewGroup, false);
                 return new LoadingViewHolder(view);
             }
+            case EXHAUSTED_TYPE: {
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_search_exhausted, viewGroup, false);
+                return new SearchExhaustedViewHolder(view);
+            }
             default: {
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, viewGroup, false);
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_list_item, viewGroup, false);
                 return new ImageViewHolder(view, mListener);
             }
         }
@@ -89,12 +92,33 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public int getItemViewType(int position) {
         if (mImageList.get(position).getTitle().equals("LOADING...")) {
             return LOADING_TYPE;
+        } else if (mImageList.get(position).getTitle().equals("EXHAUSTED...")) {
+            return EXHAUSTED_TYPE;
         } else if (position == mImageList.size()
                 && position != 0
                 && !mImageList.get(position).getTitle().equals("EXHAUSTED...")) {
             return LOADING_TYPE;
         } else {
             return IMAGE_TYPE;
+        }
+    }
+
+    public void setQueryExhausted() {
+        hideLoading();
+        Image exhaustedMarkerImage = new Image();
+        exhaustedMarkerImage.setTitle("EXHAUSTED...");
+        mImageList.add(exhaustedMarkerImage);
+        notifyDataSetChanged();
+    }
+
+    public void hideLoading() {
+        if (isLoading()) {
+            for (Image image : mImageList) {
+                if (image.getTitle().equals("LOADING...")) {
+                    mImageList.remove(image);
+                }
+            }
+            notifyDataSetChanged();
         }
     }
 

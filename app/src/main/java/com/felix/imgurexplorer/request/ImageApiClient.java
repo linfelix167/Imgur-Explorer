@@ -22,9 +22,8 @@ public class ImageApiClient {
     private static final String TAG = ImageApiClient.class.getSimpleName();
 
     private static ImageApiClient instance;
-    private MutableLiveData<List<Image>> mPhotos;
-    private RetrievePhotosRunnable mRetrievePhotosRunnable;
-    private MutableLiveData<Image> mImage;
+    private MutableLiveData<List<Image>> mImages;
+    private RetrieveImagesRunnable mRetrieveImagesRunnable;
 
     public static ImageApiClient getInstance() {
         if (instance == null) {
@@ -34,19 +33,19 @@ public class ImageApiClient {
     }
 
     private ImageApiClient() {
-        mPhotos = new MutableLiveData<>();
+        mImages = new MutableLiveData<>();
     }
 
-    public LiveData<List<Image>> getPhotos() {
-        return mPhotos;
+    public LiveData<List<Image>> getImages() {
+        return mImages;
     }
 
     public void searchPhotoApi(int pageNumber, String query) {
-        if (mRetrievePhotosRunnable != null) {
-            mRetrievePhotosRunnable = null;
+        if (mRetrieveImagesRunnable != null) {
+            mRetrieveImagesRunnable = null;
         }
-        mRetrievePhotosRunnable = new RetrievePhotosRunnable(pageNumber, query);
-        final Future handler = AppExecutors.get().networkIO().submit(mRetrievePhotosRunnable);
+        mRetrieveImagesRunnable = new RetrieveImagesRunnable(pageNumber, query);
+        final Future handler = AppExecutors.get().networkIO().submit(mRetrieveImagesRunnable);
 
         // Set a timeout for the data refresh
         AppExecutors.get().networkIO().schedule(new Runnable() {
@@ -58,18 +57,18 @@ public class ImageApiClient {
     }
 
     public void cancelRequest() {
-        if (mRetrievePhotosRunnable != null) {
-            mRetrievePhotosRunnable.cancelRequest();
+        if (mRetrieveImagesRunnable != null) {
+            mRetrieveImagesRunnable.cancelRequest();
         }
     }
 
-    private class RetrievePhotosRunnable implements Runnable {
+    private class RetrieveImagesRunnable implements Runnable {
 
         private int pageNumber;
         private String query;
         private boolean cancelRequest;
 
-        public RetrievePhotosRunnable(int pageNumber, String query) {
+        public RetrieveImagesRunnable(int pageNumber, String query) {
             this.query = query;
             this.pageNumber = pageNumber;
             cancelRequest = false;
@@ -78,32 +77,32 @@ public class ImageApiClient {
         @Override
         public void run() {
             try {
-                Response response = getPhotos(pageNumber, query).execute();
+                Response response = getImages(pageNumber, query).execute();
                 if (cancelRequest) {
                     return;
                 }
                 if (response.code() == 200) {
                     List<Image> list = new ArrayList<>(((ImageSearchResponse)response.body()).getImages());
                     if (pageNumber == 1) {
-                        mPhotos.postValue(list);
+                        mImages.postValue(list);
                     } else {
-                        List<Image> currentImages = mPhotos.getValue();
+                        List<Image> currentImages = mImages.getValue();
                         currentImages.addAll(list);
-                        mPhotos.postValue(currentImages);
+                        mImages.postValue(currentImages);
                     }
 
                 } else {
                     String error = response.errorBody().string();
                     Log.e(TAG, "run: error " + error);
-                    mPhotos.postValue(null);
+                    mImages.postValue(null);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                mPhotos.postValue(null);
+                mImages.postValue(null);
             }
         }
 
-        private Call<ImageSearchResponse> getPhotos(int pageNumber, String query) {
+        private Call<ImageSearchResponse> getImages(int pageNumber, String query) {
             return ServiceGenerator.getImageApi().searchPhoto(
                     pageNumber,
                     query);
