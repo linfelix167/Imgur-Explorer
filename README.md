@@ -8,6 +8,12 @@ Project Design
 * <strong>MVVM Architecture</strong>: Model, Repository, ViewModel
 * Custom Loading Animation ProgressBar
 * RecyclerView Pagination
+* Multiple View Types in a RecyclerView
+* Singletons
+* Customize Toolbar Behaviors with CoordinatorLayout and AppBarLayout
+* Display Images using Glide
+* CardView
+* SearchView
 
 Design Diagram
 ---------
