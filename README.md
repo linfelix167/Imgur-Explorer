@@ -24,9 +24,9 @@ Why Architecture Components
 
 Screenshots
 ---------
-<img src="https://i.imgur.com/boCs1AX.png" width="48">
-<img src="https://i.imgur.com/hwzWksu.png" width="48">
-<img src="https://i.imgur.com/kWYOYnh.png" width="48">
+<img style="float: right; src="https://i.imgur.com/boCs1AX.png" width="200">
+<img style="float: right; src="https://i.imgur.com/hwzWksu.png" width="200">
+<img style="float: right; src="https://i.imgur.com/kWYOYnh.png" width="200">
 
 Libraries
 ---------
